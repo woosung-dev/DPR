@@ -3,6 +3,11 @@ from flask import Flask, jsonify, request, render_template
 import jwt
 import bcrypt
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+import time
+from camera import Camera
+import cv2
+
+pin=13
 
 # app 객체 생성
 app = Flask(__name__)
@@ -16,6 +21,8 @@ admin_id = "Minsu"
 admin_pw = "123456"
 SECRET_KEY = 'apple'
 
+
+# 기본 페이지 표시 및 인증
 @app.route('/')
 def mainPage():
     return "<h1>Main Page</h1>"
@@ -35,13 +42,51 @@ def login():
     access_token = create_access_token(identity=username)
     return jsonify({'access_token': access_token}), 200
 
-
 @app.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
     current_user = get_jwt_identity()
     return jsonify({'msg': f'{current_user}님, 인증에 성공하셨습니다!'}), 200
 
+
+
+# 비디오 스트림 테스트
+@app.route('/get_data')
+def get_data():
+    return render_template('get_data.html')
+
+#동적 경로 테스트
+@app.route('/drt/<username>')
+def hello_user(username):
+    return render_template('index.html', user=username)
+
+# caemra 구현 부분
+@app.route('/video_feed')
+def video_feed():
+   return Response(gen(Camera()), mimetype='multipart/x-mixed-replace; boundary=frame')
+def gen(camera):
+   while True:
+       frame = camera.get_frame()
+       yield (b'--frame\r\n'
+              b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+# caemra 구현 부분2
+@app.route('/video_feed2')
+def video_feed():
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+def generate_frames():
+    video = cv2.VideoCapture(0)  # Change 0 to the video file path if streaming from a file
+    
+    while True:
+        success, frame = video.read()
+        if not success:
+            break
+        
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
+        
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 # 웹 서버 구동
 if __name__ == '__main__': # 모듈이 아니라면, 웹서버를 구동시켜라!
