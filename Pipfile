@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 flask = "*"
+bcrypt = "*"
+jwt = "*"
+flask-jwt-extended = "*"
 
 [dev-packages]
 
