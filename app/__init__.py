@@ -6,6 +6,7 @@ from flask_jwt_extended import JWTManager, jwt_required, create_access_token, ge
 import time
 from camera import Camera
 import cv2
+import time
 
 pin=13
 
@@ -26,6 +27,20 @@ SECRET_KEY = 'apple'
 @app.route('/')
 def mainPage():
     return "<h1>Main Page</h1>"
+
+
+@app.route('/signup', methods=['GET'])
+def sigin_form():
+    return render_template('signup.html')
+
+@app.route('/login', methods=['GET'])
+def login_form():
+    return render_template('login_form.html')
+
+@app.route('/login2', methods=['GET'])
+def login_form2():
+    return render_template('login.html')
+
 
 @app.route("/login", methods=["POST"])  
 def login():
@@ -48,7 +63,20 @@ def protected():
     current_user = get_jwt_identity()
     return jsonify({'msg': f'{current_user}님, 인증에 성공하셨습니다!'}), 200
 
+@app.route('/get_camera')
+def get_camera():
+    get_time=time.strfrime("%Y-%m-%d%H:%M:%M:%S", time.localtime())
 
+def gen():
+    while True:
+        retVale,frame =vc.read()
+        fram=cv2.resize(frame,(160,120))
+        retVale,frame =cv2.imencode(".jpg", frame)
+        yield(b'--frame\r\n'b'Content-Type:image/jpeg\r\n\r\n'+frame.tobytes()+b'\r\n')
+
+@app.route('/video_feed')
+def get_video_feed():
+    return Response(gen(), mimetype='multipart/x-mixed-replace;boundary=frame')
 
 # 비디오 스트림 테스트
 @app.route('/get_data')
@@ -72,7 +100,7 @@ def gen(camera):
 
 # caemra 구현 부분2
 @app.route('/video_feed2')
-def video_feed():
+def video_feed2():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 def generate_frames():
     video = cv2.VideoCapture(0)  # Change 0 to the video file path if streaming from a file
