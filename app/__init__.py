@@ -86,6 +86,11 @@ def get_data():
 #동적 경로 테스트
 @app.route('/drt/<username>')
 def hello_user(username):
+    var1=request.args
+    print(var1)
+    for key,value in var1.items():
+        print(key,value)
+
     return render_template('index.html', user=username)
 
 # caemra 구현 부분

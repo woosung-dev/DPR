@@ -13,6 +13,7 @@ flask-jwt-extended = "*"
 camera = "*"
 opencv-python = "*"
 "rpi.gpio" = "*"
+requests = "*"
 
 [dev-packages]
 
