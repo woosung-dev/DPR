@@ -12,6 +12,7 @@ bcrypt = "*"
 flask-jwt-extended = "*"
 camera = "*"
 opencv-python = "*"
+"rpi.gpio" = "*"
 
 [dev-packages]
 
