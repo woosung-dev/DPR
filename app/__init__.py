@@ -123,4 +123,4 @@ def generate_frames():
 
 # 웹 서버 구동
 if __name__ == '__main__': # 모듈이 아니라면, 웹서버를 구동시켜라!
-    app.run(host="0.0.0.0", port="5000")
+    app.run(host='0.0.0.0',port = '5000',debug=True)

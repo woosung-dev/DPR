@@ -1,7 +1,11 @@
+# 희수님 코드
+# 라즈베리 파이 2 서브 모트 부분 코드
+
 import RPi.GPIO as GPIO
 from time import sleep
 import time
 from collections import deque
+
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 servoPin2 = 18
@@ -33,6 +37,7 @@ servo3 = GPIO.PWM(servoPin3, 50)
 servo3.start(0)
 servo4 = GPIO.PWM(servoPin4, 50)
 servo4.start(0)  # 서보 PWM 시작, duty = 0이면 서보는 동작하지 않는다.
+
 def setServoPos(servo, degree):
     # 각도는 180도를 넘을 수 없다.
     if degree > 180:
@@ -40,6 +45,7 @@ def setServoPos(servo, degree):
     duty = SERVO_MIN_DUTY + (degree * (SERVO_MAX_DUTY - SERVO_MIN_DUTY) / 180.0)
     print("Degree: {} to {}(Duty)".format(degree, duty))
     servo.ChangeDutyCycle(duty)
+
 def Distance():
     while True:
         stop = 0
@@ -57,6 +63,7 @@ def Distance():
         time.sleep(0.1)
         if distance < 10 :
             break
+
 def Step_45():
     step = 0
     while step < 230:
@@ -71,6 +78,7 @@ def Step_45():
     GPIO.output(BIN1, 0)
     GPIO.output(AIN2, 0)
     GPIO.output(BIN2, 0)
+
 def Step_90():
     step = 0
     while step < 465:
@@ -85,6 +93,7 @@ def Step_90():
     GPIO.output(BIN1, 0)
     GPIO.output(AIN2, 0)
     GPIO.output(BIN2, 0)
+
 def Step_135():
     step = 0
     while step < 695:
@@ -99,6 +108,7 @@ def Step_135():
     GPIO.output(BIN1, 0)
     GPIO.output(AIN2, 0)
     GPIO.output(BIN2, 0)
+
 def Step_45_reverse():
     step = 0
     while step < 230:
@@ -113,6 +123,7 @@ def Step_45_reverse():
     GPIO.output(BIN1, 0)
     GPIO.output(AIN2, 0)
     GPIO.output(BIN2, 0)
+
 def Step_90_reverse():
     step = 0
     while step < 465:
@@ -127,6 +138,7 @@ def Step_90_reverse():
     GPIO.output(BIN1, 0)
     GPIO.output(AIN2, 0)
     GPIO.output(BIN2, 0)
+
 def Step_135_reverse():
     step = 0
     while step < 695:
@@ -141,21 +153,27 @@ def Step_135_reverse():
     GPIO.output(BIN1, 0)
     GPIO.output(AIN2, 0)
     GPIO.output(BIN2, 0)
+
 def Case1():
     setServoPos(servo2, 45)
     setServoPos(servo3, 0)
     setServoPos(servo4, 45)
     sleep(1)
+
 def Case2():
     setServoPos(servo2, 0)
     setServoPos(servo3, 0)
     setServoPos(servo4, 95)
     sleep(1)
+
 def Case3():
     setServoPos(servo2, 45)
     setServoPos(servo3, 85)
     setServoPos(servo4, 0)
     sleep(1)
+
+
+# 메인 무한 반복
 try:
     while True:
         choice = int(input(" choice : "))
@@ -195,4 +213,5 @@ try:
     servo4.stop()
 except KeyboardInterrupt:
     pass
+
 GPIO.cleanup()
