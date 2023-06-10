@@ -39,7 +39,7 @@ SECRET_KEY = 'apple'
 # 기본 페이지 표시 및 인증
 @app.route('/')
 def mainPage():
-    return "<h1>Main Page</h1>"
+     return render_template('home.html')
 
 @app.route('/select')
 def mainPage2():

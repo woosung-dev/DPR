@@ -27,22 +27,6 @@ def login_form():
     return render_template('login_form.html')
 
 
-# @app.route("/login", methods=["POST"])  
-# def login():
-#     username = request.json.get('username', None)
-#     password = request.json.get('password', None)
-
-#     if not username or not password:
-#         return jsonify({'msg': '아이디 또는 비밀번호를 입력하세/요.'}), 400
-
-#     if username != admin_id and password != admin_pw:
-#         return jsonify({'msg': '아이디 또는 비밀번호가 일치하지 않습니다.'}), 401
-
-#     # JWT 생성
-#     access_token = create_access_token(identity=username)
-#     return jsonify({'access_token': access_token}), 200
-
-
 # Generate a JWT token
 def generate_token(user_id):
     token = create_access_token(identity=user_id)
@@ -51,11 +35,8 @@ def generate_token(user_id):
 # Route that sets the JWT as a cookie
 @app.route('/login', methods=["POST"]) 
 def login():
-    print('123123')
     username = request.json.get('username', None)
     password = request.json.get('password', None)
-
-    print('?')
 
     if not username or not password:
         return jsonify({'msg': '아이디 또는 비밀번호를 입력하세/요.'}), 400
@@ -64,14 +45,11 @@ def login():
         return jsonify({'msg': '아이디 또는 비밀번호가 일치하지 않습니다.'}), 401
 
 
-    print('!')
     # JWT 생성
     token = generate_token(username)
-    print(token)
     response = make_response(jsonify({'message': 'Login successful'}))
     response.set_cookie('jwt_token', token, httponly=True)
     return response
-    # return jsonify({'access_token': access_token}), 200
 
 
 @app.route('/protected', methods=['GET'])
