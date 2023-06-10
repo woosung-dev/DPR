@@ -1,4 +1,5 @@
 # Flask import
+import psycopg2
 from flask import Flask, jsonify, request, render_template
 import jwt
 import bcrypt
@@ -17,6 +18,18 @@ app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = 'super-secret'
 jwt = JWTManager(app)
 
+# 경로 추가
+# sys.path.append('config')
+# import db_config
+# 데이터베이스 연결 함수
+def connect_db():
+    conn = psycopg2.connect(database='bota',
+                            user='postgres',
+                            password='postgres',
+                            host='127.0.0.1',
+                            port=5432)
+    return conn
+
 # 라우터 설정
 admin_id = "Minsu"
 admin_pw = "123456"
@@ -28,6 +41,18 @@ SECRET_KEY = 'apple'
 def mainPage():
     return "<h1>Main Page</h1>"
 
+@app.route('/select')
+def mainPage2():
+    conn = connect_db()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM b_user;")
+    records = cur.fetchall()
+
+    result = ''
+    for row in records:
+        result += f"{row}<br>"
+
+    return result
 
 @app.route('/signup', methods=['GET'])
 def sigin_form():
