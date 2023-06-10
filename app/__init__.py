@@ -1,6 +1,7 @@
 # Flask import
-from flask import Flask, jsonify, request, render_template, session, redirect
+from flask import Flask, jsonify, request, render_template, session, redirect, Response
 from camera import Camera
+import requests
 import time
 import psycopg2
 import cv2
