@@ -14,6 +14,7 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Custom styles for this template -->
     <link href="/static/css/starter-template.css" rel="stylesheet" />
+    <link href="/static/css/camera.css" rel="stylesheet" />
   </head>
 
   <body>
@@ -67,6 +68,15 @@
       <div class="starter-template">
         <h3><img src="{{url_for('video_feed')}}" width="90%"></h3>
         <hr>
+        <!-- 조이스틱 -->
+        <div class="joy-stick-wrapper">
+          <button type="button">⇧</button>
+          <div class="btn-space">
+            <button type="button">⇦</button>
+            <button type="button">⇨</button>
+          </div>
+          <button type="button">⇩</button>
+        </div>
         <center>
             <button onClick="location.href='/'">Move Home page</button>
         </center>

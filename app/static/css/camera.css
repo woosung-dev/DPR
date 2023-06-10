@@ -1,0 +1,20 @@
+.joy-stick-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 30px 0;
+
+    button {
+        padding: 5px;
+    }
+}
+
+.btn-space {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}

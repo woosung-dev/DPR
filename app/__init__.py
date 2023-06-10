@@ -56,10 +56,6 @@ def gen():
         retVale,frame =cv2.imencode(".jpg", frame)
         yield(b'--frame\r\n'b'Content-Type:image/jpeg\r\n\r\n'+frame.tobytes()+b'\r\n')
 
-@app.route('/video_feed')
-def get_video_feed():
-    return Response(gen(), mimetype='multipart/x-mixed-replace;boundary=frame')
-
 # camera
 @app.route('/camera')
 def get_data():
@@ -78,30 +74,31 @@ def hello_user(username):
 # caemra 구현 부분
 @app.route('/video_feed')
 def video_feed():
-   return Response(gen(Camera()), mimetype='multipart/x-mixed-replace; boundary=frame')
-def gen(camera):
-   while True:
-       frame = camera.get_frame()
-       yield (b'--frame\r\n'
-              b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-# caemra 구현 부분2
-@app.route('/video_feed2')
-def video_feed2():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 def generate_frames():
-    video = cv2.VideoCapture(0)  # Change 0 to the video file path if streaming from a file
-    
+    camera = cv2.VideoCapture(0)  # Use the appropriate camera index if not the default
     while True:
-        success, frame = video.read()
+        success, frame = camera.read()
         if not success:
             break
-        
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer.tobytes()
-        
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        else:
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+# 다른 주소에서 받아오는 것
+def gen_frames():
+    while True:
+        # get에 clinet ip를 넣기
+        response = requests.get("http://raspberry_pi_2_address:5001/video_feed", stream=True)
+        if not response:
+            break
+        else:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    yield (b'--frame\r\n'
+                           b'Content-Type: image/jpeg\r\n\r\n' + chunk + b'\r\n')
 
 
 @app.route('/login', methods=['GET', 'POST'])
