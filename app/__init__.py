@@ -1,11 +1,8 @@
 # Flask import
-import psycopg2
-from flask import Flask, jsonify, request, render_template
-import jwt
-import bcrypt
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
-import time
+from flask import Flask, jsonify, request, render_template, session, redirect
 from camera import Camera
+import time
+import psycopg2
 import cv2
 import time
 
@@ -14,13 +11,9 @@ pin=13
 # app 객체 생성
 app = Flask(__name__)
 
-# JWT 설정
-app.config['JWT_SECRET_KEY'] = 'super-secret'
-jwt = JWTManager(app)
+# secret_key 설정
+app.secret_key = 'your_secret_key'
 
-# 경로 추가
-# sys.path.append('config')
-# import db_config
 # 데이터베이스 연결 함수
 def connect_db():
     conn = psycopg2.connect(database='bota',
@@ -30,17 +23,15 @@ def connect_db():
                             port=5432)
     return conn
 
-# 라우터 설정
-admin_id = "Minsu"
-admin_pw = "123456"
-SECRET_KEY = 'apple'
-
-
 # 기본 페이지 표시 및 인증
 @app.route('/')
 def mainPage():
-     return render_template('home.html')
+    username = ''
+    if 'username' in session:
+        username = session['username']
+    return render_template('home.html', user=username)
 
+# DB test
 @app.route('/select')
 def mainPage2():
     conn = connect_db()
@@ -58,40 +49,6 @@ def mainPage2():
 def sigin_form():
     return render_template('signup.html')
 
-@app.route('/login', methods=['GET'])
-def login_form():
-    return render_template('login_form.html')
-
-@app.route('/login2', methods=['GET'])
-def login_form2():
-    return render_template('login.html')
-
-
-@app.route("/login", methods=["POST"])  
-def login():
-    username = request.json.get('username', None)
-    password = request.json.get('password', None)
-
-    if not username or not password:
-        return jsonify({'msg': '아이디 또는 비밀번호를 입력하세/요.'}), 400
-
-    if username != admin_id and password != admin_pw:
-        return jsonify({'msg': '아이디 또는 비밀번호가 일치하지 않습니다.'}), 401
-
-    # JWT 생성
-    access_token = create_access_token(identity=username)
-    return jsonify({'access_token': access_token}), 200
-
-@app.route('/protected', methods=['GET'])
-@jwt_required()
-def protected():
-    current_user = get_jwt_identity()
-    return jsonify({'msg': f'{current_user}님, 인증에 성공하셨습니다!'}), 200
-
-@app.route('/get_camera')
-def get_camera():
-    get_time=time.strfrime("%Y-%m-%d%H:%M:%M:%S", time.localtime())
-
 def gen():
     while True:
         retVale,frame =vc.read()
@@ -103,10 +60,10 @@ def gen():
 def get_video_feed():
     return Response(gen(), mimetype='multipart/x-mixed-replace;boundary=frame')
 
-# 비디오 스트림 테스트
-@app.route('/get_data')
+# camera
+@app.route('/camera')
 def get_data():
-    return render_template('get_data.html')
+    return render_template('camera.html')
 
 #동적 경로 테스트
 @app.route('/drt/<username>')
@@ -145,6 +102,42 @@ def generate_frames():
         
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # 로그인 처리 로직
+        username = request.form['username']
+        password = request.form['password']
+        
+        # 로그인 성공 시 세션에 사용자 정보 저장
+        session['username'] = username
+        return redirect('/')
+    
+    return '''
+        <form method="post" action="/login">
+            <input type="text" name="username" placeholder="Username"><br>
+            <input type="password" name="password" placeholder="Password"><br>
+            <input type="submit" value="Login">
+        </form>
+    '''
+
+# 마이페이지
+@app.route('/mypage')
+def homeTes():
+    username = ''
+    if 'username' in session:
+        # 세션에 사용자 정보가 있으면 로그인 상태로 간주
+        username = session['username']
+    return render_template('mypage.html', user=username)
+
+# 로그아웃
+@app.route('/logout')
+def logout():
+    # 세션에서 사용자 정보 제거
+    session.pop('username', None)
+    return redirect('/')
 
 # 웹 서버 구동
 if __name__ == '__main__': # 모듈이 아니라면, 웹서버를 구동시켜라!

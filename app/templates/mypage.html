@@ -14,6 +14,7 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Custom styles for this template -->
     <link href="/static/css/starter-template.css" rel="stylesheet" />
+    <link href="/static/css/mypage.css" rel="stylesheet" />
   </head>
 
   <body>
@@ -60,15 +61,12 @@
     </nav>
 
     <!-- container -->
-    <div class="container">
-      <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">
-          Use this document as a way to quickly start any new project.<br />
-          All you get is this text and a mostly barebones HTML document.
-        </p>
-      </div>
+    <div class="f-center">
+      <img src="{{url_for('static', filename='IMG/avatar.png')}}" width="200" />
+      <h3>{{user}}</h3>
+      <a href="/logout">logout</a>
     </div>
+
     <!-- /.container -->
 
     <!-- Bootstrap core JavaScript
