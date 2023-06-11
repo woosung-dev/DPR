@@ -14,7 +14,6 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Custom styles for this template -->
     <link href="/static/css/starter-template.css" rel="stylesheet" />
-    <link href="/static/css/camera.css" rel="stylesheet" />
   </head>
 
   <body>
@@ -34,29 +33,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a
-            class="navbar-brand"
-            href="/"
-            >R-Bot</a
-          >
+          <a class="navbar-brand" href="/">R-Bot (View)</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active">
               <a href="/">Home</a>
-            </li>
-            <li>
-              <a href="/camera">camera</a>
-            </li>
-            <li>
-              <a href="/content">Content</a>
-            </li>
-            <li>
-              {% if user %}
-              <a href="/mypage">mypage</a>
-              {% else %}
-              <a href="/login">login</a>
-              {% endif %}
             </li>
           </ul>
         </div>
@@ -67,20 +49,10 @@
     <!-- container -->
     <div class="container">
       <div class="starter-template">
-        <h3><img src="{{url_for('video_feed')}}" width="90%"></h3>
-        <hr>
-        <!-- 조이스틱 -->
-        <div class="joy-stick-wrapper">
-          <button type="button">⇧</button>
-          <div class="btn-space">
-            <button type="button">⇦</button>
-            <button type="button">⇨</button>
-          </div>
-          <button type="button">⇩</button>
-        </div>
-        <center>
-            <button onClick="location.href='/'">Move Home page</button>
-        </center>
+        <p>x: {{x}}</p>
+        <p>y: {{y}}</p>
+        <p>h: {{h}}</p>
+        <p>w: {{w}}</p>
       </div>
     </div>
     <!-- /.container -->
