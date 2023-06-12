@@ -8,9 +8,6 @@ from time import sleep
 import math
 import time
 from collections import deque
-from flask import Flask, jsonify, request, render_template, session, redirect, Response
-
-app = Flask(__name__)
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -73,8 +70,6 @@ z = 0
 angle1 = 0
 angle2 = 0
 
-state = "start"
-
 distance = None
 
 def Distance():
@@ -111,7 +106,7 @@ def convert_to_range(value, width=640, range_start=1, range_end=9):
     return round(converted_value)
 
 # 로봇 팔 제어 함수 (어깨 / y값)
-def move_robot_arm_A():
+def move_robot_arm_A():,
     l = convert_to_range(y, 480, 1, 10)
     print("목표 y 좌표 입력 (cm): ", l)
    
@@ -234,40 +229,8 @@ def original_deg_step():
     sleep(1)
 
 
-@app.route('/drt/<username>')
-def hello_user(username):
-    print('Hello')
-    var1=request.args
-    x1=1
-    x2=1
-    y1=1
-    y2=1
-    h=1
-    w=1
-
-    print(var1)
-    for key,value in var1.items():
-        print(key,value)
-        if key == 'x1':
-            x1 = float(value)
-        elif key == 'x2':
-            x2 = float(value)
-        elif key == 'y1':
-            y1 = float(value)
-        elif key == 'y2':
-            y2 = float(value)
-        elif key == 'w':
-            w = float(value)
-        elif key == 'h':
-            h = float(value)
-
-    print('x', (x1+x2)/2, 'y', (y1+y2)/2, 'w', w, 'h', h)
-
-
-    x = (x1+x2)/2
-    y = (y1+y2)/2
-    
-    try:
+try:
+    while True:
         # 로봇 팔 이동
         print("///동작 실행///")
         move_robot_arm_A()
@@ -276,13 +239,9 @@ def hello_user(username):
         original_deg_servo()
         original_deg_step()
         print("///동작 종료///")
-    except KeyboardInterrupt:
-        pass
+       
+except KeyboardInterrupt:
+    pass
 
-    # 종료 시 GPIO 해제
-    GPIO.cleanup()
-    return render_template('server2_main.html', x=(x1+x2)/2, y=(y1+y2)/2, h=h, w=w)
-
-# 웹 서버 구동
-if __name__ == '__main__': # 모듈이 아니라면, 웹서버를 구동시켜라!
-    app.run(host='0.0.0.0',port = '5001',debug=True)
+# 종료 시 GPIO 해제
+GPIO.cleanup()
